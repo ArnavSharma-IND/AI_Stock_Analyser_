@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Stock Analyzer - Professional Trading Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">📈</div>
+                <h1 class="logo-text">StockAI</h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="market">
+                    <span class="nav-icon">📊</span>
+                    <span>Market</span>
+                </a>
+                <a href="#" class="nav-item" data-page="portfolio">
+                    <span class="nav-icon">💼</span>
+                    <span>Portfolio</span>
+                </a>
+                <a href="#" class="nav-item" data-page="insights">
+                    <span class="nav-icon">🤖</span>
+                    <span>AI Insights</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-section">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-info">
+                        <p class="user-name">Trader</p>
+                        <p class="user-status">Connected</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="search-container">
+                    <input type="text" id="tickerInput" class="ticker-input" placeholder="Search ticker (AAPL, TSLA, RELIANCE...)" maxlength="10">
+                    <button id="searchBtn" class="search-btn">Search</button>
+                </div>
+                <div class="top-bar-info">
+                    <div class="market-status">
+                        <span class="status-dot"></span>
+                        <span id="marketStatus">Market Open</span>
+                    </div>
+                    <div class="time-display" id="timeDisplay">00:00:00</div>
+                </div>
+            </div>
+
+            <!-- Pages Container -->
+            <div class="pages-container">
+                <!-- Dashboard Page -->
+                <div id="dashboard-page" class="page active">
+                    <div class="page-title">
+                        <h2>Market Analysis Dashboard</h2>
+                        <p class="subtitle">Real-time AI-powered stock analysis</p>
+                    </div>
+
+                    <!-- Stock Analysis Section -->
+                    <div class="dashboard-grid">
+                        <div class="analysis-section">
+                            <!-- Price Card -->
+                            <div class="card price-card">
+                                <div class="card-header">
+                                    <h3 id="stockTicker">Select Stock</h3>
+                                    <span id="companyName" class="company-name">-</span>
+                                </div>
+                                <div class="price-display">
+                                    <div class="current-price">
+                                        <span class="price-label">Current Price</span>
+                                        <span id="currentPrice" class="price-value">$0.00</span>
+                                    </div>
+                                    <div class="price-change">
+                                        <span id="priceChange" class="change-amount">+0.00</span>
+                                        <span id="changePercent" class="change-percent">+0.00%</span>
+                                    </div>
+                                </div>
+                                <div class="price-stats">
+                                    <div class="stat">
+                                        <span class="stat-label">High</span>
+                                        <span id="highPrice" class="stat-value">$0.00</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-label">Low</span>
+                                        <span id="lowPrice" class="stat-value">$0.00</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-label">Volume</span>
+                                        <span id="volume" class="stat-value">0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chart -->
+                            <div class="card chart-card">
+                                <div class="card-header">
+                                    <h3>Price Trend (7 Days)</h3>
+                                    <div class="chart-controls">
+                                        <button class="chart-btn active" data-period="1D">1D</button>
+                                        <button class="chart-btn" data-period="5D">5D</button>
+                                        <button class="chart-btn" data-period="1M">1M</button>
+                                        <button class="chart-btn" data-period="3M">3M</button>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="priceChart"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Technical Indicators -->
+                            <div class="card indicators-card">
+                                <div class="card-header">
+                                    <h3>Technical Indicators</h3>
+                                </div>
+                                <div class="indicators-grid">
+                                    <div class="indicator">
+                                        <span class="indicator-name">RSI (14)</span>
+                                        <div class="indicator-bar">
+                                            <div id="rsiBar" class="indicator-fill"></div>
+                                        </div>
+                                        <span id="rsiValue" class="indicator-value">0</span>
+                                    </div>
+                                    <div class="indicator">
+                                        <span class="indicator-name">MACD</span>
+                                        <div class="indicator-status">
+                                            <span id="macdStatus" class="status-text">-</span>
+                                        </div>
+                                        <span id="macdValue" class="indicator-value">0.00</span>
+                                    </div>
+                                    <div class="indicator">
+                                        <span class="indicator-name">SMA (20)</span>
+                                        <div class="indicator-status">
+                                            <span id="smaStatus" class="status-text">-</span>
+                                        </div>
+                                        <span id="smaValue" class="indicator-value">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Prediction & Insights -->
+                        <div class="insights-section">
+                            <!-- AI Prediction Card -->
+                            <div class="card prediction-card">
+                                <div class="card-header">
+                                    <h3>AI Prediction</h3>
+                                </div>
+                                <div class="prediction-container">
+                                    <div class="signal-display">
+                                        <div id="signalBadge" class="signal-badge hold">
+                                            HOLD
+                                        </div>
+                                        <div class="signal-info">
+                                            <p class="signal-title">Trading Signal</p>
+                                            <p id="confidence" class="confidence-text">Confidence: --</p>
+                                        </div>
+                                    </div>
+                                    <div class="prediction-details">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Predicted Price</span>
+                                            <span id="predictedPrice" class="detail-value">$0.00</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Prediction Gap</span>
+                                            <span id="predictionGap" class="detail-value gap">+0.00%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Reasoning Card -->
+                            <div class="card reasoning-card">
+                                <div class="card-header">
+                                    <h3>Analysis Reasoning</h3>
+                                </div>
+                                <div class="reasoning-content">
+                                    <ul id="reasoningList" class="reasoning-list">
+                                        <li class="reason-item">Select a stock to see analysis</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Investment Calculator -->
+                            <div class="card calculator-card">
+                                <div class="card-header">
+                                    <h3>Investment Calculator</h3>
+                                </div>
+                                <div class="calculator-form">
+                                    <div class="input-group">
+                                        <label for="investAmount">Investment Amount (₹)</label>
+                                        <input type="number" id="investAmount" placeholder="10,000" value="10000" min="100">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="investMonths">Time Period (Months)</label>
+                                        <input type="number" id="investMonths" placeholder="12" value="12" min="1" max="60">
+                                    </div>
+                                    <button id="calculateBtn" class="calculate-btn">Calculate</button>
+                                    <div id="calcResults" class="calc-results">
+                                        <div class="result-item">
+                                            <span class="result-label">Expected Return</span>
+                                            <span id="expectedReturn" class="result-value">₹0</span>
+                                        </div>
+                                        <div class="result-item">
+                                            <span class="result-label">Risk Level</span>
+                                            <span id="riskLevel" class="result-value">--</span>
+                                        </div>
+                                        <div class="result-item">
+                                            <span class="result-label">Potential Profit</span>
+                                            <span id="potentialProfit" class="result-value">₹0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Page -->
+                <div id="market-page" class="page">
+                    <div class="page-title">
+                        <h2>Market Overview</h2>
+                        <p class="subtitle">Top performers and market sentiment</p>
+                    </div>
+
+                    <div class="market-grid">
+                        <!-- Market Sentiment -->
+                        <div class="card sentiment-card">
+                            <div class="card-header">
+                                <h3>Market Sentiment</h3>
+                            </div>
+                            <div class="sentiment-meter">
+                                <div class="sentiment-scale">
+                                    <div id="sentimentBar" class="sentiment-bar"></div>
+                                </div>
+                                <div class="sentiment-labels">
+                                    <span>Bearish</span>
+                                    <span id="sentimentText" class="sentiment-value">Neutral</span>
+                                    <span>Bullish</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Gainers -->
+                        <div class="card gainers-card">
+                            <div class="card-header">
+                                <h3>🔥 Top Gainers</h3>
+                            </div>
+                            <div id="gainersContainer" class="stock-list">
+                                <div class="loading-skeleton"></div>
+                            </div>
+                        </div>
+
+                        <!-- Top Losers -->
+                        <div class="card losers-card">
+                            <div class="card-header">
+                                <h3>❄️ Top Losers</h3>
+                            </div>
+                            <div id="losersContainer" class="stock-list">
+                                <div class="loading-skeleton"></div>
+                            </div>
+                        </div>
+
+                        <!-- Market Breadth -->
+                        <div class="card breadth-card">
+                            <div class="card-header">
+                                <h3>Market Breadth</h3>
+                            </div>
+                            <div class="breadth-container">
+                                <div class="breadth-item">
+                                    <span class="breadth-label">Advancing</span>
+                                    <div class="breadth-bar">
+                                        <div id="advancingBar" class="breadth-fill green"></div>
+                                    </div>
+                                    <span id="advancingCount" class="breadth-count">0</span>
+                                </div>
+                                <div class="breadth-item">
+                                    <span class="breadth-label">Declining</span>
+                                    <div class="breadth-bar">
+                                        <div id="decliningBar" class="breadth-fill red"></div>
+                                    </div>
+                                    <span id="decliningCount" class="breadth-count">0</span>
+                                </div>
+                                <div class="breadth-item">
+                                    <span class="breadth-label">Unchanged</span>
+                                    <div class="breadth-bar">
+                                        <div id="unchangedBar" class="breadth-fill yellow"></div>
+                                    </div>
+                                    <span id="unchangedCount" class="breadth-count">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Volatility Index -->
+                        <div class="card volatility-card">
+                            <div class="card-header">
+                                <h3>Market Volatility</h3>
+                            </div>
+                            <div class="volatility-display">
+                                <div class="volatility-gauge">
+                                    <span id="volatilityValue" class="volatility-number">0.00</span>
+                                </div>
+                                <div class="volatility-status">
+                                    <span id="volatilityStatus" class="status-text">Low</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Portfolio Page -->
+                <div id="portfolio-page" class="page">
+                    <div class="page-title">
+                        <h2>Portfolio</h2>
+                        <p class="subtitle">Track your investments</p>
+                    </div>
+
+                    <div class="portfolio-container">
+                        <!-- Add Stock Section -->
+                        <div class="card add-stock-card">
+                            <div class="card-header">
+                                <h3>Add Stock to Portfolio</h3>
+                            </div>
+                            <div class="add-stock-form">
+                                <input type="text" id="portfolioTicker" class="input-field" placeholder="Ticker (e.g., AAPL)">
+                                <input type="number" id="portfolioQuantity" class="input-field" placeholder="Quantity" min="1">
+                                <input type="number" id="portfolioBuyPrice" class="input-field" placeholder="Buy Price" min="0" step="0.01">
+                                <button id="addStockBtn" class="add-stock-btn">Add to Portfolio</button>
+                            </div>
+                        </div>
+
+                        <!-- Portfolio Summary -->
+                        <div class="card portfolio-summary-card">
+                            <div class="card-header">
+                                <h3>Portfolio Summary</h3>
+                            </div>
+                            <div class="portfolio-summary">
+                                <div class="summary-item">
+                                    <span class="summary-label">Total Value</span>
+                                    <span id="totalValue" class="summary-value">₹0</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Total Gain/Loss</span>
+                                    <span id="totalGainLoss" class="summary-value">₹0</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Return %</span>
+                                    <span id="returnPercent" class="summary-value">0.00%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Holdings Table -->
+                        <div class="card holdings-card">
+                            <div class="card-header">
+                                <h3>Holdings</h3>
+                            </div>
+                            <div id="holdingsContainer" class="holdings-container">
+                                <p class="empty-state">No stocks in portfolio. Add one to get started.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Insights Page -->
+                <div id="insights-page" class="page">
+                    <div class="page-title">
+                        <h2>AI-Powered Insights</h2>
+                        <p class="subtitle">Deep analysis and predictions</p>
+                    </div>
+
+                    <div class="insights-grid">
+                        <!-- Trend Analysis -->
+                        <div class="card trend-analysis-card">
+                            <div class="card-header">
+                                <h3>Trend Analysis</h3>
+                            </div>
+                            <div class="trend-content">
+                                <div class="trend-item">
+                                    <span class="trend-label">Current Trend</span>
+                                    <span id="currentTrend" class="trend-value">-</span>
+                                </div>
+                                <div class="trend-item">
+                                    <span class="trend-label">Momentum</span>
+                                    <span id="momentum" class="trend-value">-</span>
+                                </div>
+                                <div class="trend-item">
+                                    <span class="trend-label">Strength</span>
+                                    <span id="strength" class="trend-value">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risk Analysis -->
+                        <div class="card risk-analysis-card">
+                            <div class="card-header">
+                                <h3>Risk Assessment</h3>
+                            </div>
+                            <div class="risk-content">
+                                <div class="risk-item">
+                                    <span class="risk-label">Volatility</span>
+                                    <div class="risk-meter">
+                                        <div id="volatilityMeter" class="meter-fill"></div>
+                                    </div>
+                                    <span id="volValue" class="risk-value">0%</span>
+                                </div>
+                                <div class="risk-item">
+                                    <span class="risk-label">Beta</span>
+                                    <span id="betaValue" class="risk-value">0.00</span>
+                                </div>
+                                <div class="risk-item">
+                                    <span class="risk-label">Risk Rating</span>
+                                    <span id="riskRating" class="risk-value">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Support & Resistance -->
+                        <div class="card sr-card">
+                            <div class="card-header">
+                                <h3>Support & Resistance</h3>
+                            </div>
+                            <div class="sr-content">
+                                <div class="sr-item">
+                                    <span class="sr-label">Resistance 1</span>
+                                    <span id="resistance1" class="sr-value">$0.00</span>
+                                </div>
+                                <div class="sr-item">
+                                    <span class="sr-label">Current Level</span>
+                                    <span id="srCurrent" class="sr-value">$0.00</span>
+                                </div>
+                                <div class="sr-item">
+                                    <span class="sr-label">Support 1</span>
+                                    <span id="support1" class="sr-value">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pattern Recognition -->
+                        <div class="card pattern-card">
+                            <div class="card-header">
+                                <h3>Chart Patterns</h3>
+                            </div>
+                            <div id="patternContent" class="pattern-content">
+                                <p class="empty-state">Select a stock to analyze patterns</p>
+                            </div>
+                        </div>
+
+                        <!-- Recommendation Summary -->
+                        <div class="card recommendation-card">
+                            <div class="card-header">
+                                <h3>Recommendation</h3>
+                            </div>
+                            <div class="recommendation-content">
+                                <div id="recommendationText" class="recommendation-text">
+                                    Select a stock to generate recommendation
+                                </div>
+                                <div id="recommendationScore" class="recommendation-score">
+                                    Score: --
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Metrics -->
+                        <div class="card metrics-card">
+                            <div class="card-header">
+                                <h3>Performance Metrics</h3>
+                            </div>
+                            <div class="metrics-grid">
+                                <div class="metric-item">
+                                    <span class="metric-label">52W High</span>
+                                    <span id="highestPrice" class="metric-value">$0.00</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">52W Low</span>
+                                    <span id="lowestPrice" class="metric-value">$0.00</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Avg Volume</span>
+                                    <span id="avgVolume" class="metric-value">0</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">P/E Ratio</span>
+                                    <span id="peRatio" class="metric-value">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
